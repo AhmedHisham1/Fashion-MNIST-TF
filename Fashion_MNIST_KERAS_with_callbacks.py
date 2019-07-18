@@ -10,13 +10,11 @@ class CustomCallback(tf.keras.callbacks.Callback):
     def on_train_begin(self, logs=None):
         self.saved_logs = []
     def on_epoch_end(self, epoch, logs={}):
-        # try:
-        if logs.get('acc') > 0.9:
+        # print('\nlogs:\n{}'.format(logs))     # For Debugging
+        if logs.get('accuracy') > 0.9:
             print("\nReached more than 90 percent accuracy. Ending the training!")
             self.model.stop_training = True
-        # except:
-        #     print("exception at CustomCallback")
-        #     print("logs.get('acc') returns: {}".format(logs.get('acc')))
+        
     def on_batch_end(self, batch, logs={}):
         self.saved_logs.append(logs)
 
@@ -97,19 +95,21 @@ print_confusion_matrix(x_test, y_test.reshape((-1, 1)))
 # Plotting acc and loss over epochs
 
 try:
-    acc_log = [mycallback.saved_logs[i]['acc'] for i in range(len(mycallback.saved_logs))]
+    acc_log = [mycallback.saved_logs[i]['accuracy'] for i in range(len(mycallback.saved_logs))]
     loss_log = [mycallback.saved_logs[i]['loss'] for i in range(len(mycallback.saved_logs))]
     plt.figure()
-    # plt.subplot(121)
+    plt.subplot(121)
     plt.plot([i for i in range(len(mycallback.saved_logs))], acc_log)
     plt.title('acc')
     plt.xlabel('batches')
 
-    plt.figure()
-    # plt.subplot(122)
+    # plt.figure()
+    plt.subplot(122)
     plt.plot([i for i in range(len(mycallback.saved_logs))], loss_log)
     plt.title('loss')
     plt.xlabel('batches')
     plt.show()
 except:
     print('exception at assigning acc_log and loss_log')
+
+    
